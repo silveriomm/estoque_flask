@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-4 mx-auto mt-5 p-2">
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul style="list-style:none;">
+    {% for category, message in messages %}
+      <li id="msg" class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<h3 class="text-center"><i class="fas fa-unlock-alt"></i> Login</h3>
+<form method="post">
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" name="email" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="form-group">
+    <label>Senha</label>
+    <input type="password" name="password" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="row justify-content-center">
+      <button type="submit" class="btn btn-success btn-sm" style="width:100px;"><i class="fas fa-unlock-alt"></i> Entrar</button>
+      <a href="/" class="btn btn-secondary btn-sm ml-2" style="width:100px;"><i class="fas fa-times"></i> Cancelar</a>
+  </div>
+</form>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+{% endblock %}

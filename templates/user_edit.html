@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-6  mx-auto p-2 mt-5">
+    <h3 class="text-center"><i class="fas fa-user"></i> Editar Usuario</h3>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul id="msg" style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+<form method="post">
+  <div class="form-group">
+    <label>Nome</label>
+    <input type="text" name="name" value="{{ user.name  }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" name="email" value="{{ user.email  }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="form-group">
+    <label>Senha</label>
+    <input type="password" name="password" value="{{ user.password  }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="row justify-content-center">
+      <button type="submit" class="btn btn-warning btn-sm" style="width:100px;"><i class="fas fa-edit"></i> Alterar</button>
+      <a href="{{ url_for('users')  }}" class="btn btn-secondary btn-sm ml-2" style="width:100px;"><i class="fas fa-times"></i> Cancelar</a>
+  </div>
+</form>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+{% endblock %}

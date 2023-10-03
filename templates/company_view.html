@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+  <div class="mx-auto mt-5">
+  <div class="title">
+      <h3 class="text-center"> Informações da empresa </h3>
+  </div>
+  <div class="card-body">
+      
+    {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul id="msg" style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+     <table class="table table-sm table-borderless">
+        <tr>
+          <td class="text-right">Razão social:</td>
+          <td class="text-left"><strong>{{company.company_reason}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Nome fantasia:</td>
+          <td class="text-left"><strong>{{company.fantasy}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Endereço:</td>
+          <td class="text-left"><strong>{{company.address}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">CNPJ:</td>
+          <td class="text-left"><strong>{{company.id_number}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">CEP:</td>
+          <td class="text-left"><strong>{{company.zip_code}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Cidade:</td>
+          <td class="text-left"><strong>{{company.city}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Estado:</td>
+          <td class="text-left"><strong>{{company.state}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Email:</td>
+          <td class="text-left"><strong>{{company.email}}</strong></td>
+        </tr>
+        <tr>
+          <td class="text-right">Telefone:</td>
+          <td class="text-left"><strong>{{company.phone}}</strong></td>
+        </tr>
+      </table>   
+<div class="row mx-auto justify-content-center">
+        <a href="{{ url_for('company_edit', company_id=company.id)}}" class="btn btn-warning btn-sm mt-2" style="width:100px;"><i class="fas fa-edit"></i> Alterar </a>
+        <a href="{{ url_for('company_delete', company_id=company.id) }}" class="btn btn-danger btn-sm ml-3 mt-2 delete-btn" style="width:100px;"><i class="fas fa-trash"></i> Excluir </a>
+        <a href="{{ url_for('home')  }}" class="btn btn-secondary btn-sm mt-2 ml-3">
+          <i class="fas fa-times"></i>  Cancelar
+        </a>
+</div>
+  </div>
+ </div>
+
+<script src="{{ url_for('static', filename="js/jquery_1.7.1.min.js") }}"></script>
+<script src="{{ url_for('static', filename="js/confirm.js") }}"></script>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+{% endblock %}

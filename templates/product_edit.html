@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mx-auto col-10 mt-5">
+    <h3 class="text-center"><i class="fas fa-box"></i> Alterar Produto</h3>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li id="msg" class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+
+        <div class="col">
+
+
+  <div class="form-group">
+    <label>Código</label>
+    <input type="text" name="code" value="{{ product.code }}" class="form-control form-control-sm" autocomplete="off" autofocus>
+  </div>
+
+  <div class="form-group">
+  <label class="label">Categoria</label>
+    <div class="select is-small">
+      <select name="category_id" style="width:100%;" class="form-control form-control-sm">
+      {% for category in categories %}
+        <option value="{{category.id}}">{{category.name}}</option>
+      {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+  <label class="label">Marca</label>
+    <div class="select is-small">
+      <select name="brand_id" style="width:100%;" class="form-control form-control-sm">
+      {% for brand in brands %}
+        <option value="{{brand.id}}">{{brand.name}}</option>
+      {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Nome</label>
+    <input type="text" name="name" value="{{ product.name }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  
+        </div>
+        <div class="col">
+
+  <div class="form-group">
+    <label>Descrição</label>
+    <input type="text" name="description" value="{{ product.description }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+
+  <div class="form-group">
+    <label>Preço de custo</label>
+    <input type="text" name="cost_price" value="{{ product.cost_price }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  
+  <div class="form-group">
+    <label>Preço de venda</label>
+    <input type="text" name="saler_price" value="{{ product.saler_price }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  
+  <div class="form-group">
+    <label>Lucro</label>
+      <input disabled type="text" name="profit" value="{{ product.profit }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+
+  
+
+    </div>
+
+
+        </div>
+    </div>
+<div class="row justify-content-center">
+      <button type="submit" class="btn btn-warning btn-sm" style="width:100px;"><i class="fas fa-save"></i> Alterar</button>
+      <a href="{{ url_for('products')  }}" class="btn btn-secondary btn-sm ml-2" style="width:100px;"><i class="fas fa-times"></i> Cancelar</a>
+  </div>
+
+</form>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+{% endblock %}

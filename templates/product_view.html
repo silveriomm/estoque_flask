@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card col-8 mx-auto mt-5">
+  <div class="card-header">
+      <h3 class="text-center"> Informações do produto</h3>
+  </div>
+  <div class="card-body">
+
+      <table class="table table-sm table-borderless">
+        <tbody>
+          <tr>
+            <td class="text-right">Código:</td>
+            <td class="text-left"><strong>{{ product.code }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Categoria:</td>
+            <td class="text-left"><strong>{{ product.category.name }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Marca:</td>
+            <td class="text-left"><strong>{{ product.brand.name }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Nome:</td>
+            <td class="text-left"><strong>{{ product.name }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Descrição:</td>
+            <td class="text-left"><strong>{{ product.description }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Preço de custo:</td>
+            <td class="text-left"><strong>{{ product.cost_price }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Preço de venda:</td>
+            <td class="text-left"><strong>{{ product.saler_price }}</strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Lucro bruto:</td>
+            <td class="text-left"><strong>{{ product.profit }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      
+  </div>
+ <div class="text-center p-3">
+      <a href="{{ url_for('products')  }}" class="btn btn-secondary btn-sm">
+          <i class="fas fa-times"></i>  Cancelar
+      </a>
+      </div> 
+</div>
+
+{% endblock %}

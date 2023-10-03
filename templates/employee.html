@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mx-auto col-6  mt-5">
+    <h3 class="text-center"><i class="fas fa-address-card"></i> Adicionar Funcionário</h3>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+    <form method="post">
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" name="name" class="form-control form-control-sm" autocomplete="off" autofocus required>
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input id="phone_number" type="text" name="phone" class="form-control form-control-sm" autocomplete="off" required>
+      </div>
+      <div class="form-group">
+        <label>Data Admiss.</label>
+        <input type="date" name="date_admission" class="form-control form-control-sm" autocomplete="off">
+      </div>
+      <div class="row justify-content-center">
+          <button type="submit" class="btn btn-success btn-sm" style="width:100px;"><i class="fas fa-plus"></i> Cadastrar</button>
+          <a href="{{ url_for('employees') }}" class="btn btn-secondary btn-sm ml-2" style="width:100px;"><i class="fas fa-times"></i> Cancelar</a>
+      </div>
+    </form>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+<script>
+
+/* Máscaras ER */
+function mascara(o,f){
+    v_obj=o
+    v_fun=f
+    setTimeout("execmascara()",1)
+}
+function execmascara(){
+    v_obj.value=v_fun(v_obj.value)
+}
+function mtel(v){
+    v=v.replace(/\D/g,""); //Remove tudo o que não é dígito
+    v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
+    v=v.replace(/(\d)(\d{4})$/,"$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
+    return v;
+}
+function id( el ){
+	return document.getElementById( el );
+}
+window.onload = function(){
+	id('phone_number').onkeyup = function(){
+		mascara( this, mtel );
+	}
+}
+
+</script>
+
+{% endblock %}

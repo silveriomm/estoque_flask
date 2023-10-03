@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-6  mx-auto p-2 mt-5">
+    <h3 class="text-center"><i class="fas fa-table"></i> Editar categoria</h3>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li id="msg" class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+<form method="post">
+  <div class="form-group">
+    <label>Nome</label>
+    <input type="text" name="name" value="{{ category.name  }}" class="form-control form-control-sm" autocomplete="off">
+  </div>
+  <div class="row justify-content-center">
+    <button type="submit" class="btn btn-warning btn-sm" style="width:100px;"><i class="fas fa-edit"></i> Alterar</button>
+    <a href="{{ url_for('categories')  }}" class="btn btn-secondary btn-sm ml-2" style="width:100px;"><i class="fas fa-times"></i> Cancelar</a>
+  </div>
+</form>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+{% endblock %}
