@@ -3,7 +3,7 @@
 #####################################################################
 
 from flask import render_template, redirect, request, url_for, flash
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db
 from models import User, Category, Brand, Employee, Company, Product, generate_password_hash
 
@@ -19,17 +19,19 @@ def home():
 #---------------------------------------------------------------------------
 
 @app.route('/users', methods=['GET'])
+@login_required
 def users():
     users = User.query.all()
     return render_template('users.html', users=users)
+
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
     if request.method == 'POST':
         name = request.form['name']
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
-        user = User(name, email, password)
+        user = User(name, username, password)
         try:
             db.session.add(user)
             db.session.commit()
@@ -42,16 +44,17 @@ def user():
         except:
             db.session.rollback()
             if current_user.is_authenticated:
-                flash('Email ou usuário já cadastrado!','alert alert-danger')
+                flash('Nome ou usuário já cadastrado!','alert alert-danger')
                 return redirect(url_for('user'))
             else:
-                flash('Email ou usuário já cadastrado!','alert alert-danger')
+                flash('Nome ou usuário já cadastrado!','alert alert-danger')
                 return redirect(url_for('login'))
     
     return render_template('user.html')
 
 
 @app.route('/user_view/<int:user_id>', methods=['GET'])
+@login_required
 def user_view(user_id):
     user = User.query.get_or_404(user_id)
     if request.method == 'GET':
@@ -59,6 +62,7 @@ def user_view(user_id):
 
 
 @app.route('/user_edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def user_edit(user_id):
     user = User.query.get_or_404(user_id)
     if request.method == 'GET':
@@ -66,7 +70,7 @@ def user_edit(user_id):
 
     if request.method == 'POST':
         user.name = request.form['name']
-        user.email = request.form['email']
+        user.username = request.form['username']
         user.password = generate_password_hash(request.form['password'])
         try:
             db.session.commit()
@@ -80,6 +84,7 @@ def user_edit(user_id):
         return render_template('user_edit.html', user=user)
 
 @app.route('/user_delete/<int:user_id>', methods=['GET'])
+@login_required
 def user_delete(user_id):
     user = User.query.get_or_404(user_id)
     if request.method == 'GET':
@@ -99,6 +104,7 @@ def user_delete(user_id):
 #---------------------------------------------------------------------------
 
 @app.route('/company', methods=['GET', 'POST'])
+@login_required
 def company():
     if request.method == 'POST':
         company_reason = request.form['company_reason']
@@ -125,6 +131,7 @@ def company():
 
 
 @app.route('/company_view')
+@login_required
 def company_view():
     if Company.query.count() <= 0:
         return redirect(url_for('company'))
@@ -134,6 +141,7 @@ def company_view():
 
 
 @app.route('/company_edit/<int:company_id>', methods=['GET', 'POST'])
+@login_required
 def company_edit(company_id):
     company = Company.query.first()
     if request.method == 'GET':
@@ -158,6 +166,7 @@ def company_edit(company_id):
 
 
 @app.route('/company_delete/<int:company_id>', methods=['GET'])
+@login_required
 def company_delete(company_id):
     company = Company.query.get_or_404(company_id)
     if request.method == 'GET':
@@ -178,12 +187,14 @@ def company_delete(company_id):
 
 
 @app.route('/employees', methods=['GET'])
+@login_required
 def employees():
     employees = Employee.query.all()
     return render_template('employees.html', employees=employees)
 
 
 @app.route('/employee_view/<int:employee_id>', methods=['GET'])
+@login_required
 def employee_view(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     if request.method == 'GET':
@@ -191,6 +202,7 @@ def employee_view(employee_id):
 
 
 @app.route('/employee', methods=['GET', 'POST'])
+@login_required
 def employee():
     if request.method == 'POST':
         name = request.form['name']
@@ -209,6 +221,7 @@ def employee():
     return render_template('employee.html')
 
 @app.route('/employee_edit/<int:employee_id>', methods=['GET', 'POST'])
+@login_required
 def employee_edit(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     if request.method == 'GET':
@@ -231,6 +244,7 @@ def employee_edit(employee_id):
 
 
 @app.route('/employee_delete/<int:employee_id>', methods=['GET'])
+@login_required
 def employee_delete(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     if request.method == 'GET':
@@ -252,12 +266,14 @@ def employee_delete(employee_id):
 #-----------------------------------------------------------------------
 
 @app.route('/categories', methods=['GET'])
+@login_required
 def categories():
     categories = Category.query.all()
     return render_template('categories.html', categories=categories)
 
 
 @app.route('/category_view/<int:category_id>', methods=['GET'])
+@login_required
 def category_view(category_id):
     category = Category.query.get_or_404(category_id)
     if request.method == 'GET':
@@ -265,6 +281,7 @@ def category_view(category_id):
 
 
 @app.route('/category', methods=['GET', 'POST'])
+@login_required
 def category():
     if request.method == 'POST':
         name = request.form['name']
@@ -283,6 +300,7 @@ def category():
 
 
 @app.route('/category_edit/<int:category_id>', methods=['GET', 'POST'])
+@login_required
 def category_edit(category_id):
     category = Category.query.get_or_404(category_id)
     if request.method == 'POST':
@@ -300,6 +318,7 @@ def category_edit(category_id):
 
 
 @app.route('/category_delete/<int:category_id>', methods=['GET', 'POST'])
+@login_required
 def category_delete(category_id):
     catgories = Category.query.all()
     category = Category.query.get_or_404(category_id)
@@ -319,11 +338,13 @@ def category_delete(category_id):
 # ----------------------------------------------------------------------
 
 @app.route('/brands', methods=['GET'])
+@login_required
 def brands():
     brands = Brand.query.all()
     return render_template('brands.html', brands=brands)
 
 @app.route('/brand', methods=['GET', 'POST'])
+@login_required
 def brand():
     if request.method == 'POST':
         name = request.form['name']
@@ -341,6 +362,7 @@ def brand():
 
 
 @app.route('/brand_view/<int:brand_id>', methods=['GET'])
+@login_required
 def brand_view(brand_id):
     brand = Brand.query.get_or_404(brand_id)
     if request.method == 'GET':
@@ -348,6 +370,7 @@ def brand_view(brand_id):
 
 
 @app.route('/brand_edit/<int:brand_id>', methods=['GET', 'POST'])
+@login_required
 def brand_edit(brand_id):
     brand = Brand.query.get_or_404(brand_id)
     if request.method == 'POST':
@@ -365,6 +388,7 @@ def brand_edit(brand_id):
 
 
 @app.route('/brand_delete/<int:brand_id>', methods=['GET', 'POST'])
+@login_required
 def brand_delete(brand_id):
     brands = Brand.query.all()
     brand = Brand.query.get_or_404(brand_id)
@@ -386,12 +410,14 @@ def brand_delete(brand_id):
 # ----------------------------------------------------------------------
 
 @app.route('/products', methods=['GET'])
+@login_required
 def products():
     products = Product.query.all()
     return render_template('products.html', products=products)
 
 
 @app.route('/product_view/<int:product_id>', methods=['GET'])
+@login_required
 def product_view(product_id):
     product = Product.query.get_or_404(product_id)
     if request.method == 'GET':
@@ -399,6 +425,7 @@ def product_view(product_id):
 
 
 @app.route('/product', methods=['GET', 'POST'])
+@login_required
 def product():
     categories = Category.query.all()
     brands = Brand.query.all()
@@ -426,6 +453,7 @@ def product():
 
 
 @app.route('/product_edit/<int:product_id>', methods=['GET', 'POST'])
+@login_required
 def product_edit(product_id):
     categories = Category.query.all()
     brands = Brand.query.all()
@@ -455,6 +483,7 @@ def product_edit(product_id):
 
 
 @app.route('/product_delete/<int:product_id>', methods=['GET', 'POST'])
+@login_required
 def product_delete(product_id):
     categories = Category.query.all()
     brands = Brand.query.all()
@@ -480,11 +509,11 @@ def product_delete(product_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         pwd = request.form['password']
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(username=username).first()
         if not user or not user.verify_password(pwd):
-            flash('Email ou senha inválidos! Verifique se estão corretos e tente novamente.', 'alert alert-danger')
+            flash('Usuário ou senha inválidos! Verifique se estão corretos e tente novamente.', 'alert alert-danger')
             return redirect(url_for('login'))
         login_user(user)
         return redirect(url_for('home'))

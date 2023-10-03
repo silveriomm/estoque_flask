@@ -11,12 +11,12 @@ def get_user(user_id):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    email = db.Column(db.String(130), nullable=False, unique=True)
+    username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(30), nullable=False)
     
-    def __init__(self, name, email, password):
+    def __init__(self, name, username, password):
         self.name=name
-        self.email=email
+        self.username=username
         self.password = generate_password_hash(password)
         
     def verify_password(self, password):

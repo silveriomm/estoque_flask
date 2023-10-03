@@ -22,7 +22,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
-                    <th>Email</th>
+                    <th>Usuário</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -33,7 +33,7 @@
                     {% for user in users %}
                     <td>{{ user.id  }}</td>
                     <td>{{ user.name  }}</td>
-                    <td>{{ user.email  }}</td>
+                    <td>{{ user.username  }}</td>
                     <td class="text-center">
                         <a href="{{ url_for('user_view', user_id=user.id)  }}" style="color:green;"><i class="fas fa-eye"></i></a>
                     </td>
