@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mx-auto container">
+    <div class="text-center"><h3><i class="fas fa-boxes"></i> Produtos em estoque</h3></div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul id="msg" style="list-style:none;">
+                    {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+<table id="dataTable" class="table table-striped table-bordered table-sm" style="width:100%">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Criado em:</th>
+                <th>Atualizado em:</th>
+                <th class="text-center">Nº Doc.</th>
+                <th>Produto</th>
+                <th class="text-center">Quantidade</th>
+                <th class="text-center">Preço</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+            <tr>
+                <td class="text-center"> {{ stock.products.code  }}  </td>
+                <td> {{ stock.created_at.strftime('%d/%m/%Y')  }}  </td>
+                <td> {{ stock.updated_at.strftime('%d/%m/%Y')  }}  </td>
+                <td class="text-center"> {{ stock.order_number  }}  </td>
+                <td> {{ stock.products.name  }}  </td>
+                <td class="text-center"> {{ stock.quantity  }}  </td>
+                <td class="text-right"> {{ stock.products.saler_price  }}  </td>
+                <td class="text-center">
+                    <a href="{{ url_for('stock_increment', stock_id=stock.id) }}" style="color:green;"><i class="fas fa-plus"></i></a>
+                </td>
+                <td class="text-center">
+                    <a href="{{ url_for('stock_decrement', stock_id=stock.id) }}" style="color:orange;"><i class="fas fa-minus"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+</div>
+
+<script>
+    setTimeout(function(){ 
+        var msg = document.getElementById("msg");
+        msg.parentNode.removeChild(msg);   
+    }, 3000);
+</script>
+
+<script src="{{ url_for('static', filename="js/jquery_1.7.1.min.js") }}"></script>
+<script src="{{ url_for('static', filename="js/confirm.js") }}"></script>
+
+{% endblock %}

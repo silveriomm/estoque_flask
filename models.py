@@ -1,3 +1,4 @@
+import datetime
 from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -80,6 +81,7 @@ class Brand(db.Model, UserMixin):
     def __init__(self, name):
         self.name=name
 
+
 class Product(db.Model, UserMixin):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     code = db.Column(db.Integer, nullable=False)
@@ -90,6 +92,8 @@ class Product(db.Model, UserMixin):
     cost_price = db.Column(db.Numeric(11,2), nullable=False)
     saler_price = db.Column(db.Numeric(11,2), nullable=False)
     profit = db.Column(db.Numeric(11,2), nullable=False)
+    products = db.relationship('Stock', backref='products', cascade="all,delete") 
+    
 
     def __init__(self, code, category_id, brand_id, name, description, cost_price, saler_price, profit):
         self.code=code
@@ -100,6 +104,22 @@ class Product(db.Model, UserMixin):
         self.cost_price=cost_price
         self.saler_price=saler_price
         self.profit=profit
+
+now = datetime.datetime.utcnow
+
+class Stock(db.Model, UserMixin):
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    created_at = db.Column(db.DateTime, default=now, onupdate=None)
+    updated_at = db.Column(db.DateTime, default=now, onupdate=now)
+    order_number = db.Column(db.Integer, default=0, nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False, unique=True)
+    quantity = db.Column(db.Integer, nullable=False, default=0)
+
+    
+    def __init__(self, order_number, product_id, quantity):
+        self.order_number=order_number
+        self.product_id=product_id
+        self.quantity=quantity
 
 
 # descomente para criar o banco

@@ -5,7 +5,7 @@
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db
-from models import User, Category, Brand, Employee, Company, Product, generate_password_hash
+from models import User, Category, Brand, Employee, Company, Product, Stock, generate_password_hash 
 
 
 # Home (Início)
@@ -13,7 +13,10 @@ from models import User, Category, Brand, Employee, Company, Product, generate_p
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        return render_template('home.html')
+    else:
+        return redirect(url_for('login'))
 
 # Users (Usuários)
 #---------------------------------------------------------------------------
@@ -26,6 +29,7 @@ def users():
 
 
 @app.route('/user', methods=['GET', 'POST'])
+@login_required
 def user():
     if request.method == 'POST':
         name = request.form['name']
@@ -443,12 +447,24 @@ def product():
             db.session.add(product)
             db.session.commit()
             flash('Produto cadastrado com sucesso!', 'alert alert-success')
-            return redirect(url_for('product'))
         except:
             db.session.rollback()
             flash('Erro ao cadastrar produto!', 'alert alert-danger')
             return redirect(url_for('product'))
     
+        try:
+            last_product = Product.query.order_by(Product.id.desc()).first()
+            order_number=0
+            product_id = last_product.id
+            quantity=0
+            stock = Stock(order_number, product_id, quantity)
+            db.session.add(stock)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            flash('Erro ao cadastrar produto', 'alert alert-danger')
+            return redirect(url_for('product'))
+
     return render_template('product.html', categories=categories, brands=brands)
 
 
@@ -519,6 +535,53 @@ def login():
         return redirect(url_for('home'))
              
     return render_template('login.html')
+
+
+# Stock (Estoque)
+# ----------------------------------------------------------------------
+
+@app.route('/stocks', methods=['GET'])
+@login_required
+def stocks():
+    stocks = Stock.query.all()
+    return render_template('stocks.html', stocks=stocks)
+
+
+@app.route('/stock_view/<int:stock_id>', methods=['GET', 'POST'])
+def stock_view(stock_id):
+    stock = Stock.query.get_or_404(stock_id)
+    return render_template('stock_view.html', stock=stock)
+
+
+@app.route('/stock_increment/<int:stock_id>', methods=['GET', 'POST'])
+def stock_increment(stock_id):
+    stock = Stock.query.get_or_404(stock_id)
+    if request.method == 'POST':
+        stock.order_number = request.form['order_number']
+        stock.product_id = stock.product_id
+        old_quantity = int(stock.quantity)
+        new_quantity = int(request.form['quantity'])
+        stock.quantity = new_quantity + old_quantity
+        db.session.commit()
+        return redirect(url_for('stocks'))
+
+    return render_template('stock_increment.html', stock=stock, products=products)
+
+
+@app.route('/stock_decrement/<int:stock_id>', methods=['GET', 'POST'])
+def stock_decrement(stock_id):
+    stock = Stock.query.get_or_404(stock_id)
+    if request.method == 'POST':
+        stock.order_number = request.form['order_number']
+        stock.product_id = stock.product_id
+        old_quantity = int(stock.quantity)
+        new_quantity = int(request.form['quantity'])
+        stock.quantity = old_quantity - new_quantity
+        db.session.commit()
+        return redirect(url_for('stocks'))
+    return render_template('stock_decrement.html', stock=stock)
+
+
 
 # Logout (Sair)
 # ----------------------------------------------------------------------
