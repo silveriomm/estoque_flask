@@ -13,6 +13,7 @@
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
         
+        {% if current_user.is_authenticated %}
         <a class="navbar-brand" href="{{ url_for('stocks') }}">
             <i class="fas fa-boxes"></i>
             Produtos em estoque
@@ -22,6 +23,12 @@
             <i class="fas fa-sign-out-alt"></i>
             Sair
         </a>
+        {% else %}
+            <a class="navbar-brand ml-3" href="{{ url_for('login') }}">
+                <i class="fas fa-unlock"></i>
+                Acessar
+            </a>
+        {% endif %}
 
     </nav>
     <div id="layoutSidenav">
